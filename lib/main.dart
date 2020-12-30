@@ -50,7 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() async {
-    // var result = await YoutubeApi.getVideoInfoDictionary("wYJGNKNR_OU");
+    var videoUrl = await YoutubeApi.getVideoUrl("wYJGNKNR_OU");
+    print(videoUrl);
     var searcResult =
         await YoutubeApi.getVideoInfoDetails(query: "sevimli dostlar");
     print(searcResult);
@@ -61,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
         key: key, pageToken: nextPageToken, query: "sevimli dostlar");
 
 //"https://www.youtube.com/get_video_info?&video_id=wYJGNKNR_OU&el=detailpage"
-    print(searcResult);
+    //  print(searcResult);
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
