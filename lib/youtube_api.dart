@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'youtube_data.dart';
-import 'save_file.dart';
+import 'models/youtube_data_get_api.dart';
+import 'models/youtube_data_post_api.dart';
 
 http.Client client = new http.Client();
 
@@ -35,22 +35,72 @@ class YoutubeApi {
       },
       'continuation': pageToken
     };
-    print(json.encode(body));
+
     if (key != null) {
       final http.Response response = await http.post(
         'https://www.youtube.com/youtubei/v1/search?key=$key',
         body: json.encode(body),
       );
       if (response.statusCode == 200) {
-        print(json.decode(response.body));
-        savetoFile(response.body);
-        return resultData;
-      } else {
-        return resultData;
+        var contents = YoutubeDataPostApi.fromJson(json.decode(response.body))
+            .onResponseReceivedCommands
+            .first
+            .appendContinuationItemsAction
+            .continuationItems
+            .first
+            .itemSectionRenderer
+            .contents;
+        var nextPageToken =
+            YoutubeDataPostApi.fromJson(json.decode(response.body))
+                .onResponseReceivedCommands
+                .first
+                .appendContinuationItemsAction
+                .continuationItems
+                .last
+                .continuationItemRenderer
+                .continuationEndpoint
+                .continuationCommand
+                .token;
+        var estimatedResults =
+            YoutubeDataPostApi.fromJson(json.decode(response.body))
+                .estimatedResults;
+        resultData = {
+          'results': {},
+          'version': '1.0',
+          'parser': 'YotubeParser',
+          'key': key,
+          'estimatedResults': estimatedResults ?? 0,
+          'nextPageToken': nextPageToken ?? "",
+        };
+
+        for (var i = 0; i < contents.length; i++) {
+          var renderer = contents[i].videoRenderer;
+          Map<String, dynamic> video = {
+            'video': {
+              'id': renderer.videoId,
+              'title': renderer.title.runs?.first?.text ?? "",
+              'url':
+                  'https://www.youtube.com${renderer.navigationEndpoint.commandMetadata.webCommandMetadata.url}',
+              'duration': renderer.lengthText.simpleText ?? "Live",
+              'snippet': renderer.descriptionSnippet ?? "",
+              'upload_date': renderer.publishedTimeText.simpleText ?? "Live",
+              'thumbnail_src': renderer.thumbnail.thumbnails.last.url,
+              'views': renderer.viewCountText.simpleText ?? '0',
+              'username': renderer.ownerText.runs?.first?.text ?? "",
+              'channel_url':
+                  'https://www.youtube.com${renderer.ownerText.runs?.first?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url}' ??
+                      "",
+              'verified': false,
+            }
+          };
+
+          resultData["results"] = video;
+        }
       }
+      return resultData;
     } else {
       var url =
-          "https://www.youtube.com/results?search_query=redkit&sp=EgIQAQ%253D%253D";
+          "https://www.youtube.com/results?search_query=$query&sp=EgIQAQ%253D%253D";
 
       var raw = (await client.get(url)).body;
       var root = parser.parse(raw);
@@ -105,9 +155,10 @@ class YoutubeApi {
         jsonData =
             json.decode(_extractJson(initialDataText, 'var ytInitialData = '));
       }
-      var estimatedResults = YoutubeData.fromJson(jsonData).estimatedResults;
+      var estimatedResults =
+          YoutubeDataGetApi.fromJson(jsonData).estimatedResults;
 
-      var contents = YoutubeData.fromJson(jsonData)
+      var contents = YoutubeDataGetApi.fromJson(jsonData)
           .contents
           .twoColumnSearchResultsRenderer
           .primaryContents
@@ -116,7 +167,7 @@ class YoutubeApi {
           .first
           .itemSectionRenderer
           .contents;
-      var nextPageToken = YoutubeData.fromJson(jsonData)
+      var nextPageToken = YoutubeDataGetApi.fromJson(jsonData)
           .contents
           .twoColumnSearchResultsRenderer
           .primaryContents
@@ -142,7 +193,7 @@ class YoutubeApi {
         Map<String, dynamic> video = {
           'video': {
             'id': renderer.videoId,
-            'title': renderer.title.runs.first.text ?? "",
+            'title': renderer.title.runs?.first?.text ?? "",
             'url':
                 'https://www.youtube.com${renderer.navigationEndpoint.commandMetadata.webCommandMetadata.url}',
             'duration': renderer.lengthText.simpleText ?? "Live",
@@ -150,9 +201,9 @@ class YoutubeApi {
             'upload_date': renderer.publishedTimeText.simpleText ?? "Live",
             'thumbnail_src': renderer.thumbnail.thumbnails.last.url,
             'views': renderer.viewCountText.simpleText ?? '0',
-            'username': renderer.ownerText.runs.first.text ?? "",
+            'username': renderer.ownerText.runs?.first?.text ?? "",
             'channel_url':
-                'https://www.youtube.com${renderer.ownerText.runs.first.navigationEndpoint.commandMetadata.webCommandMetadata.url}' ??
+                'https://www.youtube.com${renderer.ownerText.runs?.first?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url}' ??
                     "",
             'verified': false,
           }
@@ -161,7 +212,7 @@ class YoutubeApi {
         resultData["results"] = video;
       }
     }
-    print(resultData);
+
     return resultData;
   }
 }

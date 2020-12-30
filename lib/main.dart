@@ -53,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // var result = await YoutubeApi.getVideoInfoDictionary("wYJGNKNR_OU");
     var searcResult =
         await YoutubeApi.getVideoInfoDetails(query: "sevimli dostlar");
+    print(searcResult);
     var key = searcResult["key"];
     var nextPageToken = searcResult["nextPageToken"];
 
