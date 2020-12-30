@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'youtube_data.dart';
+import 'save_file.dart';
 
 http.Client client = new http.Client();
 
@@ -42,6 +43,7 @@ class YoutubeApi {
       );
       if (response.statusCode == 200) {
         print(json.decode(response.body));
+        savetoFile(response.body);
         return resultData;
       } else {
         return resultData;
