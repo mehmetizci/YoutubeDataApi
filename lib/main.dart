@@ -50,15 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() async {
-    var videoUrl = await YoutubeApi.getVideoUrl("wYJGNKNR_OU");
-    print(videoUrl);
-    var searcResult =
-        await YoutubeApi.getVideoInfoDetails(query: "sevimli dostlar");
+    //var videoUrl = await YoutubeApi.getVideoUrl("N3v9mRFE9to");
+    // print(videoUrl);
+    var searcResult = await YoutubeApi.getVideoInfo(query: "sevimli dostlar");
     print(searcResult);
     var key = searcResult["key"];
     var nextPageToken = searcResult["nextPageToken"];
 
-    searcResult = await YoutubeApi.getVideoInfoDetails(
+    searcResult = await YoutubeApi.getVideoInfo(
         key: key, pageToken: nextPageToken, query: "sevimli dostlar");
 
 //"https://www.youtube.com/get_video_info?&video_id=wYJGNKNR_OU&el=detailpage"

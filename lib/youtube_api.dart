@@ -21,7 +21,7 @@ class YoutubeApi {
     return videoUrl["url"];
   }
 
-  static Future<Map<dynamic, dynamic>> getVideoInfoDetails(
+  static Future<Map<dynamic, dynamic>> getVideoInfo(
       {String query, String key, String pageToken, String sp}) async {
     Map<String, dynamic> resultData = {'results': {}};
 
@@ -100,7 +100,7 @@ class YoutubeApi {
       return resultData;
     } else {
       var url =
-          "https://www.youtube.com/results?search_query=$query&sp=EgIQAQ%253D%253D";
+          "https://www.youtube.com/results?search_query=${Uri.encodeComponent(query)}&sp=EgIQAQ%253D%253D";
 
       var raw = (await client.get(url)).body;
       var root = parser.parse(raw);
