@@ -1,5 +1,5 @@
-name: api
-description: A new Flutter project.
+name: YoutubeDataApi
+description: Youtube video search and download Api
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
