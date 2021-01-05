@@ -9,7 +9,7 @@ http.Client client = new http.Client();
 class YoutubeApi {
   static Future<String> getVideoUrl(String videoId) async {
     var url =
-        'https://www.youtube.com/get_video_info?&video_id=${videoId}&el=detailpage';
+        'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
     var raw = (await client.get(url)).body;
     var response = Uri.splitQueryString(raw);
 
