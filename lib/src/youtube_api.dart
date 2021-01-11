@@ -87,7 +87,10 @@ class YoutubeApi {
               'uploadDate': renderer.publishedTimeText.simpleText ?? "Live",
               'thumbnailUrl': renderer.thumbnail.thumbnails.last.url ?? null,
               'views': renderer.viewCountText.simpleText ?? '0',
-              'userName': renderer.ownerText.runs?.first?.text ?? "",
+              'channelName': renderer.ownerText.runs?.first?.text ?? "",
+              'channelId': renderer.ownerText.runs?.first?.navigationEndpoint
+                      ?.browseEndpoint?.browseId ??
+                  "",
               'channelLogo': renderer
                       .channelThumbnailSupportedRenderers
                       .channelThumbnailWithLinkRenderer
@@ -209,7 +212,10 @@ class YoutubeApi {
             'uploadDate': renderer.publishedTimeText.simpleText ?? "Live",
             'thumbnailUrl': renderer.thumbnail.thumbnails.last.url ?? null,
             'views': renderer.viewCountText.simpleText ?? '0',
-            'userName': renderer.ownerText.runs?.first?.text ?? "",
+            'channelName': renderer.ownerText.runs?.first?.text ?? "",
+            'channelId': renderer.ownerText.runs?.first?.navigationEndpoint
+                    ?.browseEndpoint?.browseId ??
+                "",
             'channelLogo': renderer
                     .channelThumbnailSupportedRenderers
                     .channelThumbnailWithLinkRenderer
