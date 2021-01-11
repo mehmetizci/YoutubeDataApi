@@ -16,12 +16,12 @@ class YoutubeApi {
     var playerResponseJson = json.decode(response['player_response']);
     var streamingData = playerResponseJson['streamingData'];
     var formats = streamingData['formats'];
-    var videoUrl = formats[formats.length - 1];
+    var videoUrl = formats.last;
 
     return videoUrl["url"];
   }
 
-  static Future<Map<dynamic, dynamic>> getVideoInfo(
+  static Future<Map<dynamic, dynamic>> searchVideo(
       {String query, String key, String pageToken, String sp}) async {
     Map<String, dynamic> resultData = {'results': {}};
 
@@ -67,7 +67,7 @@ class YoutubeApi {
         resultData = {
           'results': {},
           'version': '1.0',
-          'parser': 'YotubeParser',
+          'parser': 'youtube_data_api',
           'key': key,
           'estimatedResults': estimatedResults ?? 0,
           'nextPageToken': nextPageToken ?? "",
@@ -80,16 +80,24 @@ class YoutubeApi {
               'id': renderer.videoId,
               'title': renderer.title.runs?.first?.text ?? "",
               'url':
-                  'https://www.youtube.com${renderer.navigationEndpoint.commandMetadata.webCommandMetadata.url}',
+                  'https://www.youtube.com${renderer.navigationEndpoint.commandMetadata.webCommandMetadata.url}' ??
+                      null,
               'duration': renderer.lengthText.simpleText ?? "Live",
               'snippet': renderer.descriptionSnippet ?? "",
-              'upload_date': renderer.publishedTimeText.simpleText ?? "Live",
-              'thumbnail_src': renderer.thumbnail.thumbnails.last.url,
+              'uploadDate': renderer.publishedTimeText.simpleText ?? "Live",
+              'thumbnailUrl': renderer.thumbnail.thumbnails.last.url ?? null,
               'views': renderer.viewCountText.simpleText ?? '0',
-              'username': renderer.ownerText.runs?.first?.text ?? "",
-              'channel_url':
+              'userName': renderer.ownerText.runs?.first?.text ?? "",
+              'channelLogo': renderer
+                      .channelThumbnailSupportedRenderers
+                      .channelThumbnailWithLinkRenderer
+                      .thumbnail
+                      .thumbnails
+                      .first ??
+                  null,
+              'channelUrl':
                   'https://www.youtube.com${renderer.ownerText.runs?.first?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url}' ??
-                      "",
+                      null,
               'verified': false,
             }
           };
@@ -182,7 +190,7 @@ class YoutubeApi {
       resultData = {
         'results': {},
         'version': '1.0',
-        'parser': 'YotubeParser',
+        'parser': 'youtube_data_api',
         'key': apiKey,
         'estimatedResults': estimatedResults ?? 0,
         'nextPageToken': nextPageToken ?? "",
@@ -195,16 +203,24 @@ class YoutubeApi {
             'id': renderer.videoId,
             'title': renderer.title.runs?.first?.text ?? "",
             'url':
-                'https://www.youtube.com${renderer.navigationEndpoint.commandMetadata.webCommandMetadata.url}',
+                'https://www.youtube.com${renderer.navigationEndpoint.commandMetadata.webCommandMetadata.url}' ??
+                    null,
             'duration': renderer.lengthText.simpleText ?? "Live",
             'snippet': renderer.descriptionSnippet ?? "",
-            'upload_date': renderer.publishedTimeText.simpleText ?? "Live",
-            'thumbnail_src': renderer.thumbnail.thumbnails.last.url,
+            'uploadDate': renderer.publishedTimeText.simpleText ?? "Live",
+            'thumbnailUrl': renderer.thumbnail.thumbnails.last.url ?? null,
             'views': renderer.viewCountText.simpleText ?? '0',
-            'username': renderer.ownerText.runs?.first?.text ?? "",
-            'channel_url':
+            'userName': renderer.ownerText.runs?.first?.text ?? "",
+            'channelLogo': renderer
+                    .channelThumbnailSupportedRenderers
+                    .channelThumbnailWithLinkRenderer
+                    .thumbnail
+                    .thumbnails
+                    .first ??
+                null,
+            'channelUrl':
                 'https://www.youtube.com${renderer.ownerText.runs?.first?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url}' ??
-                    "",
+                    null,
             'verified': false,
           }
         };
