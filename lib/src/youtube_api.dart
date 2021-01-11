@@ -98,7 +98,6 @@ class YoutubeApi {
               'channelUrl':
                   'https://www.youtube.com${renderer.ownerText.runs?.first?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url}' ??
                       null,
-              'verified': false,
             }
           };
 
@@ -221,7 +220,6 @@ class YoutubeApi {
             'channelUrl':
                 'https://www.youtube.com${renderer.ownerText.runs?.first?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url}' ??
                     null,
-            'verified': false,
           }
         };
 
