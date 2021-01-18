@@ -3,10 +3,99 @@ import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'models/youtube_data_get_api.dart';
 import 'models/youtube_data_post_api.dart';
+import 'models/playerResponse.dart';
+import 'models/watchNextResponse.dart';
 
 http.Client client = new http.Client();
 
+class VideoDetails {
+  List<Format> adaptiveVideo;
+  List<Format> adaptiveAudio;
+  List<Format> muxedVideo;
+  String likeCount;
+  String dislikeCount;
+  String videoUrl;
+  VideoDetails(this.adaptiveVideo, this.adaptiveAudio, this.muxedVideo,
+      this.likeCount, this.dislikeCount, this.videoUrl);
+}
+
 class YoutubeApi {
+  static Future<VideoDetails> getStreamManifest(String videoId) async {
+    var url =
+        'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
+    var raw = (await client.get(url)).body;
+    var response = Uri.splitQueryString(raw);
+
+    WatchNextResponse res = json.decode(response['watch_next_response']);
+    String likeCount = res
+        .contents
+        .twoColumnWatchNextResults
+        .results
+        .results
+        .contents
+        .first
+        .videoPrimaryInfoRenderer
+        .videoActions
+        .menuRenderer
+        .topLevelButtons
+        .first
+        .toggleButtonRenderer
+        .defaultText
+        .simpleText;
+    String dislikeCount = res
+        .contents
+        .twoColumnWatchNextResults
+        .results
+        .results
+        .contents
+        .first
+        .videoPrimaryInfoRenderer
+        .videoActions
+        .menuRenderer
+        .topLevelButtons
+        .first
+        .toggleButtonRenderer
+        .defaultText
+        .simpleText;
+
+    var playerResponseJson = json.decode(response['player_response']);
+    var streamingData = playerResponseJson['streamingData'];
+    List<Format> adaptiveVideo;
+    List<Format> adaptiveAudio;
+    List<Format> muxedVideo;
+    StreamingData data = StreamingData();
+    data.formats = streamingData['formats'];
+    data.adaptiveFormats = streamingData['adaptiveFormats'];
+    for (int i = 0; i < data.adaptiveFormats.length; i++) {
+      if (data.adaptiveFormats[i].audioChannels != null) {
+        // Send to Audio only array.
+        adaptiveAudio.add(data.adaptiveFormats[i]);
+      } else {
+        // Send to video only array.
+        adaptiveVideo.add(data.adaptiveFormats[i]);
+      }
+    }
+    for (int i = 0; i < data.formats.length; i++) {
+      muxedVideo.add(data.formats[i]);
+    }
+
+    adaptiveVideo
+      ..sort((a, b) => b.fps.compareTo(a.fps))
+      ..sort((a, b) => b.quality.compareTo(a.quality));
+    adaptiveAudio
+      ..sort((a, b) => b.bitrate.compareTo(a.bitrate))
+      ..sort((a, b) => b.quality.compareTo(a.quality));
+    muxedVideo
+      ..sort((a, b) => b.fps.compareTo(a.fps))
+      ..sort((a, b) => b.quality.compareTo(a.quality));
+
+    var formats = streamingData['formats'];
+    var videoUrl = formats.last;
+    return VideoDetails(adaptiveVideo, adaptiveAudio, muxedVideo, likeCount,
+        dislikeCount, videoUrl["url"]);
+    // return videoUrl["url"];
+  }
+
   static Future<String> getVideoUrl(String videoId) async {
     var url =
         'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
