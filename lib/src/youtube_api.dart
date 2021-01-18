@@ -20,7 +20,7 @@ class VideoDetails {
 }
 
 class YoutubeApi {
-  static Future<VideoDetails> getStreamManifest(String videoId) async {
+  static Future<PlayerResponse> getStreamManifest(String videoId) async {
     var url =
         'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
     var raw = (await client.get(url)).body;
@@ -63,8 +63,9 @@ class YoutubeApi {
 
     PlayerResponse playerResponseJson =
         PlayerResponse.fromJson(response['player_response']);
+    return playerResponseJson;
     //json.decode(response['player_response']);
-    StreamingData data = playerResponseJson.streamingData;
+    /*StreamingData data = playerResponseJson.streamingData;
     List<Format> adaptiveVideo;
     List<Format> adaptiveAudio;
     List<Format> muxedVideo;
@@ -112,7 +113,7 @@ class YoutubeApi {
     var formats = streamingData['formats'];
     var videoUrl = formats.last;
 
-    return videoUrl["url"];
+    return videoUrl["url"];*/
   }
 
   static Future<Map<dynamic, dynamic>> searchVideo(
