@@ -26,8 +26,9 @@ class YoutubeApi {
     var raw = (await client.get(url)).body;
     var response = Uri.splitQueryString(raw);
 
-    WatchNextResponse res = json.decode(response['watch_next_response']);
-    String likeCount = res
+    //WatchNextResponse res = json.decode(response['watch_next_response']);
+    String likeCount = "";
+    /* res
         .contents
         .twoColumnWatchNextResults
         .results
@@ -41,8 +42,10 @@ class YoutubeApi {
         .first
         .toggleButtonRenderer
         .defaultText
-        .simpleText;
-    String dislikeCount = res
+        .simpleText;*/
+
+    String dislikeCount = "";
+    /*res
         .contents
         .twoColumnWatchNextResults
         .results
@@ -56,7 +59,7 @@ class YoutubeApi {
         .first
         .toggleButtonRenderer
         .defaultText
-        .simpleText;
+        .simpleText;*/
 
     var playerResponseJson = json.decode(response['player_response']);
     var streamingData = playerResponseJson['streamingData'];
