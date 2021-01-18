@@ -62,7 +62,7 @@ class YoutubeApi {
         .simpleText;*/
 
     PlayerResponse playerResponseJson =
-        PlayerResponse.fromJson(response['player_response']);
+        PlayerResponse.fromMap(json.decode(response['player_response']));
     return playerResponseJson;
     //json.decode(response['player_response']);
     /*StreamingData data = playerResponseJson.streamingData;
