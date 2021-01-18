@@ -62,13 +62,13 @@ class YoutubeApi {
         .simpleText;*/
 
     var playerResponseJson = json.decode(response['player_response']);
-    var streamingData = playerResponseJson['streamingData'];
+    StreamingData streamingData = playerResponseJson['streamingData'];
     List<Format> adaptiveVideo;
     List<Format> adaptiveAudio;
     List<Format> muxedVideo;
     StreamingData data = StreamingData();
-    data.formats = streamingData['formats'];
-    data.adaptiveFormats = streamingData['adaptiveFormats'];
+    data.formats = streamingData.formats;
+    data.adaptiveFormats = streamingData.adaptiveFormats;
     for (int i = 0; i < data.adaptiveFormats.length; i++) {
       if (data.adaptiveFormats[i].audioChannels != null) {
         // Send to Audio only array.
@@ -92,10 +92,10 @@ class YoutubeApi {
       ..sort((a, b) => b.fps.compareTo(a.fps))
       ..sort((a, b) => b.quality.compareTo(a.quality));
 
-    var formats = streamingData['formats'];
-    var videoUrl = formats.last;
+    List<Format> formats = streamingData.formats;
+    Format videoUrl = formats.last;
     return VideoDetails(adaptiveVideo, adaptiveAudio, muxedVideo, likeCount,
-        dislikeCount, videoUrl["url"]);
+        dislikeCount, videoUrl.url);
     // return videoUrl["url"];
   }
 
