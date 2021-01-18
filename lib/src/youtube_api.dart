@@ -62,7 +62,8 @@ class YoutubeApi {
         .simpleText;*/
 
     PlayerResponse playerResponseJson =
-        json.decode(response['player_response']);
+        PlayerResponse.fromJson(response['player_response']);
+    //json.decode(response['player_response']);
     StreamingData data = playerResponseJson.streamingData;
     List<Format> adaptiveVideo;
     List<Format> adaptiveAudio;
