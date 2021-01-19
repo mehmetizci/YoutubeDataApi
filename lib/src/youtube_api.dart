@@ -92,7 +92,8 @@ class YoutubeApi {
     //data.formats = streamingData.formats;
     //data.adaptiveFormats = streamingData.adaptiveFormats;
     for (int i = 0; i < data.adaptiveFormats.length; i++) {
-      if (data.adaptiveFormats[i].audioChannels != null) {
+      if (data.adaptiveFormats[i].audioChannels != null &&
+          data.adaptiveFormats[i] != null) {
         // Send to Audio only array.
         adaptiveAudio.add(data.adaptiveFormats[i]);
       } else {
