@@ -20,11 +20,30 @@ class VideoDetails {
 }
 
 class YoutubeApi {
+  static Map<String, dynamic> splitQueryStrings(String query,
+      {Encoding encoding = utf8}) {
+    return query.split("&").fold({}, (map, element) {
+      int index = element.indexOf("=");
+      if (index == -1) {
+        if (element != "") {
+          map[Uri.decodeQueryComponent(element, encoding: encoding)] = "";
+        }
+      } else if (index != 0) {
+        var key = element.substring(0, index);
+        var value = element.substring(index + 1);
+        map[Uri.decodeQueryComponent(key, encoding: encoding)] =
+            Uri.decodeQueryComponent(value, encoding: encoding);
+      }
+      return map;
+    });
+  }
+
   static Future<PlayerResponse> getStreamManifest(String videoId) async {
     var url =
         'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
     var raw = (await client.get(url)).body;
-    var response = Uri.splitQueryString(raw);
+    //var response = parser.parse(raw);
+    var response = splitQueryStrings(raw);
 
     //WatchNextResponse res = json.decode(response['watch_next_response']);
     String likeCount = "";
