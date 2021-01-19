@@ -38,7 +38,7 @@ class YoutubeApi {
     });
   }
 
-  static Future<String> getStreamManifest(String videoId) async {
+  static Future<VideoDetails> getStreamManifest(String videoId) async {
     var url =
         'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
     var raw = (await client.get(url)).body;
@@ -64,8 +64,7 @@ class YoutubeApi {
         .defaultText
         .simpleText;
 
-    String dislikeCount = "";
-    /*res
+    String dislikeCount = likeRes
         .contents
         .twoColumnWatchNextResults
         .results
@@ -79,12 +78,12 @@ class YoutubeApi {
         .first
         .toggleButtonRenderer
         .defaultText
-        .simpleText;*/
+        .simpleText;
 
-    // var playerResponseJson = json.decode(response['player_response']);
-    return likeCount;
+    Map<String, dynamic> playerResponseJson = json.decode(response['player_response']);
+    final playerResponse = PlayerResponse.fromMap(playerResponseJson);
     //json.decode(response['player_response']);
-    /*StreamingData data = playerResponseJson.streamingData;
+    StreamingData data = playerResponse.streamingData;
     List<Format> adaptiveVideo;
     List<Format> adaptiveAudio;
     List<Format> muxedVideo;
