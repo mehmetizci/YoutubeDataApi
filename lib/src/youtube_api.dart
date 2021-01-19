@@ -42,7 +42,7 @@ class YoutubeApi {
     var url =
         'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
     var raw = (await client.get(url)).body;
-    //var response = parser.parse(raw);
+
     var response = splitQueryStrings(raw);
 
     Map<String, dynamic> res = json.decode(response['watch_next_response']);
@@ -83,14 +83,12 @@ class YoutubeApi {
     Map<String, dynamic> playerResponseJson =
         json.decode(response['player_response']);
     final playerResponse = PlayerResponse.fromMap(playerResponseJson);
-    //json.decode(response['player_response']);
+
     StreamingData data = playerResponse.streamingData;
     List<Format> adaptiveVideo = List<Format>();
     List<Format> adaptiveAudio = List<Format>();
     List<Format> muxedVideo = List<Format>();
-    //StreamingData data = StreamingData();
-    //data.formats = streamingData.formats;
-    //data.adaptiveFormats = streamingData.adaptiveFormats;
+
     for (int i = 0; i < data.adaptiveFormats.length; i++) {
       if (data.adaptiveFormats[i].audioChannels != null) {
         // Send to Audio only array.
@@ -118,7 +116,6 @@ class YoutubeApi {
     Format videoUrl = formats.last;
     return VideoDetails(adaptiveVideo, adaptiveAudio, muxedVideo, likeCount,
         dislikeCount, videoUrl.url);
-    // return videoUrl["url"];
   }
 
   static Future<String> getVideoUrl(String videoId) async {
