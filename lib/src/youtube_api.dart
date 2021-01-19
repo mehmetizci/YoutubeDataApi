@@ -85,15 +85,14 @@ class YoutubeApi {
     final playerResponse = PlayerResponse.fromMap(playerResponseJson);
     //json.decode(response['player_response']);
     StreamingData data = playerResponse.streamingData;
-    List<Format> adaptiveVideo;
-    List<Format> adaptiveAudio;
-    List<Format> muxedVideo;
+    List<Format> adaptiveVideo = [];
+    List<Format> adaptiveAudio = [];
+    List<Format> muxedVideo = [];
     //StreamingData data = StreamingData();
     //data.formats = streamingData.formats;
     //data.adaptiveFormats = streamingData.adaptiveFormats;
     for (int i = 0; i < data.adaptiveFormats.length; i++) {
-      if (data.adaptiveFormats[i].audioChannels != null &&
-          data.adaptiveFormats[i] != null) {
+      if (data.adaptiveFormats[i].audioChannels != null) {
         // Send to Audio only array.
         adaptiveAudio.add(data.adaptiveFormats[i]);
       } else {
