@@ -8,14 +8,14 @@ import 'models/watchNextResponse.dart';
 
 http.Client client = new http.Client();
 
-class VideoDetails {
+class StreamManifest {
   List<Format> adaptiveVideo;
   List<Format> adaptiveAudio;
   List<Format> muxedVideo;
   String likeCount;
   String dislikeCount;
   String videoUrl;
-  VideoDetails(this.adaptiveVideo, this.adaptiveAudio, this.muxedVideo,
+  StreamManifest(this.adaptiveVideo, this.adaptiveAudio, this.muxedVideo,
       this.likeCount, this.dislikeCount, this.videoUrl);
 }
 
@@ -38,7 +38,7 @@ class YoutubeApi {
     });
   }
 
-  static Future<VideoDetails> getStreamManifest(String videoId) async {
+  static Future<StreamManifest> getStreamManifest(String videoId) async {
     var url =
         'https://www.youtube.com/get_video_info?&video_id=$videoId&el=detailpage';
     var raw = (await client.get(url)).body;
@@ -114,7 +114,7 @@ class YoutubeApi {
 
     List<Format> formats = data.formats;
     Format videoUrl = formats.last;
-    return VideoDetails(adaptiveVideo, adaptiveAudio, muxedVideo, likeCount,
+    return StreamManifest(adaptiveVideo, adaptiveAudio, muxedVideo, likeCount,
         dislikeCount, videoUrl.url);
   }
 
