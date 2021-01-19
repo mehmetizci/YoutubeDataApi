@@ -80,7 +80,8 @@ class YoutubeApi {
         .defaultText
         .simpleText;
 
-    Map<String, dynamic> playerResponseJson = json.decode(response['player_response']);
+    Map<String, dynamic> playerResponseJson =
+        json.decode(response['player_response']);
     final playerResponse = PlayerResponse.fromMap(playerResponseJson);
     //json.decode(response['player_response']);
     StreamingData data = playerResponse.streamingData;
@@ -131,7 +132,7 @@ class YoutubeApi {
     var formats = streamingData['formats'];
     var videoUrl = formats.last;
 
-    return videoUrl["url"];*/
+    return videoUrl["url"];
   }
 
   static Future<Map<dynamic, dynamic>> searchVideo(
